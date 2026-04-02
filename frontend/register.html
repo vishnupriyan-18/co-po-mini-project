@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration - Internal Assessment Marks</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .register-container { min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px; }
+        .slide-card { background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);width:100%;max-width:480px;overflow:hidden;animation:slideIn .5s ease-out; }
+        @keyframes slideIn { from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)} }
+        .slide-card-header { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:30px;text-align:center; }
+        .slide-card-header h1 { font-size:26px;margin-bottom:8px; }
+        .slide-card-body { padding:30px; }
+        .form-group { margin-bottom:18px; }
+        .form-label { display:block;margin-bottom:6px;font-weight:500;color:#333; }
+        .form-control { width:100%;padding:11px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:15px;transition:all .3s;box-sizing:border-box; }
+        .form-control:focus { outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1); }
+        .btn-register { width:100%;padding:14px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:10px;font-size:17px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s; }
+        .btn-register:hover { transform:translateY(-2px);box-shadow:0 10px 30px rgba(102,126,234,0.4); }
+        .login-link { text-align:center;margin-top:18px;color:#666; }
+        .login-link a { color:#667eea;text-decoration:none;font-weight:500; }
+        .teacher-icon { font-size:55px;margin-bottom:12px; }
+        .error-message { background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:16px;display:none; }
+        .success-message { background:#efe;color:#3c3;padding:12px;border-radius:8px;margin-bottom:16px;display:none; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="slide-card">
+            <div class="slide-card-header">
+                <div class="teacher-icon">👨‍🏫</div>
+                <h1>Teacher Registration</h1>
+                <p>Create your account to manage internal assessments</p>
+            </div>
+            <div class="slide-card-body">
+                <div class="error-message" id="errorMsg"></div>
+                <div class="success-message" id="successMsg"></div>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">Teacher ID</label>
+                        <input type="text" class="form-control" id="teacherId"
+                               placeholder="e.g. TCH002" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName"
+                               placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password"
+                               placeholder="Create a password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword"
+                               placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn-register">📝 Register Now</button>
+                </form>
+
+                <div class="login-link">
+                    Already have an account? <a href="login.html">Login here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            const teacher_id = document.getElementById('teacherId').value.trim();
+            const name = document.getElementById('fullName').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                errorMsg.textContent = 'Passwords do not match!';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                return;
+            }
+
+            const result = await api.post('/auth/register', { teacher_id, name, password });
+
+            if (result.success) {
+                errorMsg.style.display = 'none';
+                successMsg.textContent = 'Registration successful! Redirecting to login...';
+                successMsg.style.display = 'block';
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            } else {
+                errorMsg.textContent = result.message || 'Registration failed. Please try again.';
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

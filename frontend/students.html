@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - Internal Assessment Marks</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .student-table input { width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:.9rem; }
+        .student-table input:focus { outline:none;border-color:var(--primary);background:#e3f2fd; }
+        .student-table td { padding:8px; }
+        .row-number { font-weight:600;color:var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Internal Marks</h2>
+                <p id="sidebarCourseName" style="font-size:.75rem;opacity:.85;word-break:break-word;">Loading...</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="courses.html" class="nav-item"><span>🏠</span><span>My Courses</span></a>
+                <a href="dashboard.html" class="nav-item"><span>📊</span><span>Dashboard</span></a>
+                <a href="setup.html" class="nav-item"><span>⚙️</span><span>Setup</span></a>
+                <a href="students.html" class="nav-item active"><span>👨‍🎓</span><span>Students</span></a>
+                <a href="marks.html" class="nav-item"><span>📝</span><span>Marks Entry</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="teacherName">Faculty</span>
+                    <small>Logged In</small>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="width:100%;">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Student Setup</h1>
+                <p>Enter student details for this course</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3 class="card-title">Number of Students</h3></div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">How many students in the class?</label>
+                            <input type="number" class="form-control" id="studentCount"
+                                   min="1" max="200" value="5" style="width:120px;"
+                                   onchange="generateStudentTable()">
+                        </div>
+                        <div class="form-group" style="display:flex;align-items:flex-end;gap:10px;">
+                            <button class="btn btn-success" onclick="addNewRow()">➕ Add Row</button>
+                            <button class="btn btn-primary" onclick="saveAllStudents()">💾 Save All Students</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3 class="card-title">Student List</h3></div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="data-table student-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">S.No</th>
+                                    <th>Register Number</th>
+                                    <th>Student Name</th>
+                                    <th style="width:100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const courseId = localStorage.getItem('selectedCourseId');
+        const courseName = localStorage.getItem('selectedCourseName');
+        if (!courseId) { window.location.href = 'courses.html'; }
+
+        document.getElementById('sidebarCourseName').textContent = courseName || 'Course';
+
+        let studentData = [];
+
+        async function checkAuth() {
+            const result = await api.get('/auth/check');
+            if (!result.authenticated) { window.location.href = 'login.html'; }
+            else { document.getElementById('teacherName').textContent = result.name || result.teacher_id; }
+        }
+        checkAuth();
+
+        async function logout() {
+            await api.post('/auth/logout', {});
+            window.location.href = 'login.html';
+        }
+
+        function generateStudentTable() {
+            const count = parseInt(document.getElementById('studentCount').value) || 0;
+            if (count < 1) { document.getElementById('studentsTableBody').innerHTML = ''; return; }
+            if (studentData.length === 0) {
+                for (let i = 1; i <= count; i++) studentData.push({ reg_no: '', name: '' });
+            } else if (studentData.length < count) {
+                for (let i = studentData.length + 1; i <= count; i++) studentData.push({ reg_no: '', name: '' });
+            } else {
+                studentData = studentData.slice(0, count);
+            }
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = studentData.map((s, i) => `
+                <tr>
+                    <td class="row-number">${i + 1}</td>
+                    <td><input type="text" value="${escHtml(s.reg_no)}" placeholder="e.g. 2024001" onchange="studentData[${i}].reg_no=this.value.trim()"></td>
+                    <td><input type="text" value="${escHtml(s.name)}" placeholder="e.g. John Doe" onchange="studentData[${i}].name=this.value.trim()"></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteRow(${i})">🗑️</button></td>
+                </tr>`).join('');
+        }
+
+        function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        function addNewRow() {
+            studentData.push({ reg_no: '', name: '' });
+            document.getElementById('studentCount').value = studentData.length;
+            renderTable();
+        }
+
+        function deleteRow(index) {
+            if (studentData.length <= 1) { showNotification('At least one student required', 'warning'); return; }
+            studentData.splice(index, 1);
+            document.getElementById('studentCount').value = studentData.length;
+            renderTable();
+        }
+
+        async function saveAllStudents() {
+            const valid = studentData.filter(s => s.reg_no && s.name);
+            if (valid.length === 0) { showNotification('Please enter at least one student', 'error'); return; }
+            const regs = valid.map(s => s.reg_no);
+            const dups = regs.filter((r, i) => regs.indexOf(r) !== i);
+            if (dups.length > 0) { showNotification(`Duplicate register numbers: ${dups.join(', ')}`, 'error'); return; }
+
+            showLoading();
+            const result = await api.post(`/students/${courseId}/bulk`, { students: valid });
+            hideLoading();
+            showNotification(result.success ? result.message : (result.message || 'Failed'), result.success ? 'success' : 'error');
+        }
+
+        async function loadExistingStudents() {
+            const result = await api.get(`/students/${courseId}`);
+            if (result.success && result.data.length > 0) {
+                studentData = result.data.map(s => ({ reg_no: s.reg_no, name: s.name }));
+                document.getElementById('studentCount').value = studentData.length;
+                renderTable();
+            } else {
+                generateStudentTable();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadExistingStudents);
+    </script>
+</body>
+</html>

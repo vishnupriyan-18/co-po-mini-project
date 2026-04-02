@@ -1,0 +1,35 @@
+=== Internal Assessment Marks Management System ===
+
+REQUIREMENTS:
+  - Python 3.x
+  - flask  (pip install flask)
+
+  Note: flask-cors is NOT required anymore.
+
+HOW TO RUN:
+  1. Extract the zip to a folder, e.g. C:\co-po-updated-v2\
+  2. Open PowerShell or Command Prompt in that folder
+  3. Run:
+       cd backend
+       py app.py
+  4. Open your browser and go to:
+       http://localhost:5000
+
+  DO NOT open the HTML files directly — always use the URL above.
+
+DEFAULT LOGIN:
+  Teacher ID : TCH001
+  Password   : faculty123
+
+HOW IT WORKS:
+  1. Login at http://localhost:5000
+  2. My Courses page  ->  create one or more courses
+  3. Select a course  ->  goes to Dashboard
+  4. Setup            ->  set number of COs, internals, assignments
+  5. Students         ->  add students for the course
+  6. Marks Entry      ->  select internal, enter marks
+
+NOTES:
+  - Each course has its own students, setup, and marks.
+  - Different courses do NOT share data.
+  - CO checkboxes in setup are generated based on the number you enter.

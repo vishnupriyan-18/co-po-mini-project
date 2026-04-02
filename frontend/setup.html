@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Internal Assessment Marks</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Internal Marks</h2>
+                <p id="sidebarCourseName" style="font-size:.75rem;opacity:.85;word-break:break-word;">Loading...</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="courses.html" class="nav-item"><span>🏠</span><span>My Courses</span></a>
+                <a href="dashboard.html" class="nav-item"><span>📊</span><span>Dashboard</span></a>
+                <a href="setup.html" class="nav-item active"><span>⚙️</span><span>Setup</span></a>
+                <a href="students.html" class="nav-item"><span>👨‍🎓</span><span>Students</span></a>
+                <a href="marks.html" class="nav-item"><span>📝</span><span>Marks Entry</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="teacherName">Faculty</span>
+                    <small>Logged In</small>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="width: 100%;">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Setup Configuration</h1>
+                <p id="courseSubtitle">Configure CO Pool, Internals, and Structure</p>
+            </div>
+
+            <!-- Step 1: CO Pool -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 1: Course Outcomes (CO) Pool</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Number of COs for this Course</label>
+                            <input type="number" class="form-control" id="totalCO"
+                                   min="1" max="10" value="3" style="width:120px;"
+                                   oninput="generateCOPoolDisplay()">
+                        </div>
+                    </div>
+                    <div id="coMaxMarksContainer" class="mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Step 2: Number of Internals -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 2: Number of Internal Assessments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">How many internals?</label>
+                            <input type="number" class="form-control" id="internalCount"
+                                   min="1" max="5" value="2" style="width:120px;"
+                                   oninput="generateInternalForms()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Internal Configuration -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 3: Configure Each Internal</h3>
+                </div>
+                <div class="card-body">
+                    <div id="internalsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-success btn-lg" onclick="saveAllSetup()">
+                        💾 Save Complete Setup
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/setup.js"></script>
+    <script>
+        const courseId = localStorage.getItem('selectedCourseId');
+        const courseName = localStorage.getItem('selectedCourseName');
+        if (!courseId) { window.location.href = 'courses.html'; }
+
+        document.getElementById('sidebarCourseName').textContent = courseName || 'Course';
+
+        async function checkAuth() {
+            const result = await api.get('/auth/check');
+            if (!result.authenticated) { window.location.href = 'login.html'; }
+            else { document.getElementById('teacherName').textContent = result.name || result.teacher_id; }
+        }
+        checkAuth();
+
+        async function logout() {
+            await api.post('/auth/logout', {});
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadExistingSetup();
+        });
+    </script>
+</body>
+</html>
