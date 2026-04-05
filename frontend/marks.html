@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Entry - Internal Assessment Marks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/marks.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>📚 Internal Marks</h2>
+            <p id="sidebarCourseName" style="font-size:.75rem;opacity:.85;word-break:break-word;">Loading...</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="courses.html" class="nav-item"><span>🏠</span><span>My Courses</span></a>
+            <a href="dashboard.html" class="nav-item"><span>📊</span><span>Dashboard</span></a>
+            <a href="setup.html" class="nav-item"><span>⚙️</span><span>Setup</span></a>
+            <a href="students.html" class="nav-item"><span>👨‍🎓</span><span>Students</span></a>
+            <a href="marks.html" class="nav-item active"><span>📝</span><span>Marks Entry</span></a>
+                <a href="attainment.html" class="nav-item"><span>🎯</span><span>Attainment</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info"><span id="teacherName">Faculty</span><small>Logged In</small></div>
+            <button class="btn btn-danger btn-sm" onclick="logout()" style="width:100%;">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📝 Marks Entry</h1>
+            <p>Enter and manage student marks for internal assessments</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">🎯 Select Internal Assessment</h3>
+            </div>
+            <div class="card-body">
+                <div class="selector-row">
+                    <div class="form-group">
+                        <label class="form-label">Internal Assessment</label>
+                        <select class="form-control" id="internalSelect" onchange="loadMarksTable()">
+                            <option value="">-- Select Internal --</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:10px;padding-bottom:2px;flex-wrap:wrap;">
+                        <button class="btn btn-success" onclick="saveAllMarks()" id="saveBtn" disabled>💾 Save All Marks</button>
+                        <button class="btn btn-outline btn-sm" onclick="exportCSV()" id="exportBtn" style="display:none;">📥 Export CSV</button>
+                        <button class="btn btn-outline btn-sm" onclick="clearAll()" id="clearBtn" style="display:none;">🗑️ Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="internal-info-strip hidden" id="infoStrip">
+                <span class="info-badge co" id="infoCOs">📋 0 COs</span>
+                <span class="info-badge assign" id="infoAssigns">📄 0 Assignments</span>
+                <span class="info-badge total" id="infoStudents">👥 0 Students</span>
+                <span class="kb-hint" style="margin-left:auto;">
+                    <kbd class="kb-key">Tab</kbd>/<kbd class="kb-key">Enter</kbd> next &nbsp;
+                    <kbd class="kb-key">↑</kbd><kbd class="kb-key">↓</kbd> same column
+                </span>
+            </div>
+        </div>
+
+        <div id="analyticsPanel" class="hidden" style="margin-bottom:20px;"></div>
+
+        <div class="card hidden" id="marksCard" style="padding:0;overflow:hidden;">
+            <div class="card-header" style="padding:12px 22px;">
+                <h3 class="card-title" id="internalTitle">Marks Entry Table</h3>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span id="progressLabel" style="font-size:.78rem;color:var(--text-muted);"></span>
+                    <div class="progress-bar-container" id="fillProgress" style="width:160px;display:none;">
+                        <div class="progress-bar" id="progressBar" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="marks-table-container">
+                <table class="marks-table">
+                    <thead id="marksTableHead"></thead>
+                    <tbody id="marksTableBody"></tbody>
+                </table>
+            </div>
+            <div class="marks-footer">
+                <div class="marks-footer-stats">
+                    <span class="footer-stat">Students: <strong id="statStudents">0</strong></span>
+                    <span class="footer-stat">CO Max: <strong id="statCOMax">—</strong></span>
+                    <span class="footer-stat">Assign Max: <strong id="statAssignMax">—</strong></span>
+                    <span class="footer-stat">Internal Max: <strong id="statInternalMax">—</strong></span>
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+                    <button class="btn btn-success" onclick="saveAllMarks()">💾 Save All Marks</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="eseMarksCard" style="padding:0;overflow:hidden; margin-top: 20px;">
+            <div class="card-header" style="background-color: #ebf8ff; padding:12px 22px;">
+                <h3 class="card-title" style="color: #2b6cb0;">📝 End Semester Exam (ESE) Marks</h3>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span id="progressLabelEse" style="font-size:.78rem;color:var(--text-muted);"></span>
+                </div>
+            </div>
+            <div class="marks-table-container">
+                <table class="marks-table">
+                    <thead id="eseMarksTableHead">
+                        <tr>
+                            <th class="sticky-sno">S.No</th>
+                            <th class="sticky-reg">Reg No</th>
+                            <th class="sticky-name col-sep-right">Name</th>
+                            <th>ESE Mark <small>(/100)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="eseMarksTableBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="marks-footer">
+                <div class="marks-footer-stats"></div>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn btn-primary" onclick="saveEseMarks()">💾 Save ESE Marks</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="attainmentCard" style="display:none; margin-top:20px;">
+            <div class="card-header"><h3 class="card-title">🎯 Instant CO-PO Attainment Update</h3></div>
+            <div class="card-body">
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <h4 style="margin-bottom:8px; font-size:1rem; color:#4a5568;">Course Outcomes (CO)</h4>
+                    <table style="width:100%; border-collapse: collapse; text-align: center;">
+                        <thead id="marksCoHeader" style="background:#f8fafc; border-bottom:1px solid #e0e5ef;">
+                            <tr>
+                                <th style="padding:8px;border:1px solid #e0e5ef;">CO</th>
+                                <th style="padding:8px;border:1px solid #e0e5ef;">Target % (DA 100)</th>
+                                <th style="padding:8px;border:1px solid #e0e5ef;">Direct Level</th>
+                                <th style="padding:8px;border:1px solid #e0e5ef;">Overall Attainment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marksCoBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <h4 style="margin-bottom:8px; font-size:1rem; color:#4a5568;">Program Outcomes (PO)</h4>
+                    <table style="width:100%; border-collapse: collapse; text-align: center;">
+                        <thead id="marksPoHeader">
+                        </thead>
+                        <tbody id="marksPoBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">📝</div>
+            <h3>No Internal Selected</h3>
+            <p>Select an internal assessment from the dropdown above to start entering marks</p>
+        </div>
+    </main>
+</div>
+
+<div id="notification" class="notification"></div>
+<div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+
+<script src="js/api.js"></script>
+<script src="js/marks.js"></script>
+<script>
+const courseId = localStorage.getItem('selectedCourseId');
+const courseName = localStorage.getItem('selectedCourseName');
+if (!courseId) { window.location.href = 'courses.html'; }
+
+document.getElementById('sidebarCourseName').textContent = courseName || 'Course';
+
+async function checkAuth() {
+    const result = await api.get('/auth/check');
+    if (!result.authenticated) window.location.href = 'login.html';
+    else { document.getElementById('teacherName').textContent = result.name || result.teacher_id; }
+}
+checkAuth();
+async function logout() {
+    await api.post('/auth/logout', {});
+    window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>

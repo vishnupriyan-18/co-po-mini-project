@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Internal Assessment Marks</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">📚</div>
+                <h1>Internal Assessment</h1>
+                <p>Marks Management System</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Teacher ID</label>
+                    <input type="text" class="form-control" id="teacherId"
+                           placeholder="e.g. TCH001" value="TCH001" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password"
+                           value="faculty123" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Login
+                </button>
+            </form>
+
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px; font-size: 0.85rem;">
+                <strong>Default Credentials:</strong><br>
+                Teacher ID: TCH001<br>
+                Password: faculty123
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <p style="color: #666; margin-bottom: 10px;">New teacher?</p>
+                <a href="register.html" class="btn btn-secondary" style="width: 100%;">
+                    👨‍🏫 Register as Teacher
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const teacher_id = document.getElementById('teacherId').value.trim();
+            const password = document.getElementById('password').value;
+
+            showLoading();
+            const result = await api.post('/auth/login', { teacher_id, password });
+            hideLoading();
+
+            if (result.success) {
+                showNotification('Login successful!', 'success');
+                setTimeout(() => { window.location.href = 'courses.html'; }, 500);
+            } else {
+                showNotification(result.message || 'Login failed', 'error');
+            }
+        });
+
+        async function checkAuth() {
+            const result = await api.get('/auth/check');
+            if (result.authenticated) {
+                window.location.href = 'courses.html';
+            }
+        }
+        checkAuth();
+    </script>
+
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+</body>
+</html>

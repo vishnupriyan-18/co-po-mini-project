@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO-PO Attainment - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Internal Marks</h2>
+                <p id="sidebarCourseName" style="font-size:.75rem;opacity:.85;word-break:break-word;">Loading...</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="courses.html" class="nav-item"><span>🏠</span><span>My Courses</span></a>
+                <a href="dashboard.html" class="nav-item"><span>📊</span><span>Dashboard</span></a>
+                <a href="setup.html" class="nav-item"><span>⚙️</span><span>Setup</span></a>
+                <a href="students.html" class="nav-item"><span>👨‍🎓</span><span>Students</span></a>
+                <a href="marks.html" class="nav-item"><span>📝</span><span>Marks Entry</span></a>
+                <a href="attainment.html" class="nav-item active"><span>🎯</span><span>Attainment</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="teacherName">Faculty</span>
+                    <small>Logged In</small>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="width: 100%;">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>CO Attainment Dashboard</h1>
+                <p id="courseSubtitle">Visualize course outcomes and mapping achievement</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="attainment-stats-grid">
+                <div class="attainment-stat-card">
+                    <div class="attainment-stat-icon bg-indigo">🎯</div>
+                    <div class="attainment-stat-info">
+                        <h4>Course Average</h4>
+                        <p id="statCourseAvg">0.00</p>
+                    </div>
+                </div>
+                <div class="attainment-stat-card">
+                    <div class="attainment-stat-icon bg-emerald">✅</div>
+                    <div class="attainment-stat-info">
+                        <h4>Success Rate</h4>
+                        <p id="statSuccessRate">0%</p>
+                    </div>
+                </div>
+                <div class="attainment-stat-card">
+                    <div class="attainment-stat-icon bg-rose">📈</div>
+                    <div class="attainment-stat-info">
+                        <h4>Highest CO</h4>
+                        <p id="statHighestCO">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-pane" style="padding: 0; background: transparent; box-shadow: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 15px;">
+                    <div class="pane-title" style="border:none; margin:0; padding:0;">CO Attainment Result</div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="exportToExcel()" style="box-shadow: 0 2px 5px rgba(0,0,0,0.1);">📂 Export to Excel</button>
+                        <button class="btn btn-success" onclick="calculateAttainment()" style="box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);">🔄 Calculate / Refresh</button>
+                    </div>
+                </div>
+                
+                <div class="attainment-table-wrapper">
+                    <table class="attainment-matrix" id="coAttainmentTable">
+                        <thead id="coAttainmentHeader">
+                        </thead>
+                        <tbody id="coAttainmentBody">
+                            <tr><td colspan="15" style="padding: 50px; color:#a0aec0; text-align: center;">🚀 Click "Calculate / Refresh" to generate the dashboard</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="attainment-summary-footer hidden" id="attainmentFooter">
+                        <div class="summary-stat-box">
+                            <div class="summary-stat-label">COURSE ATTAINMENT AVERAGE</div>
+                            <div class="summary-stat-value" id="footerAvg">0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pane-title" style="border:none; margin:20px 0 10px 0; padding:0;">CO-PO Mapping Final Output</div>
+                <div class="attainment-table-wrapper">
+                    <table class="attainment-matrix" id="poAttainmentTable">
+                        <thead>
+                            <tr id="poAttainmentHeaderRow">
+                            </tr>
+                        </thead>
+                        <tbody id="poAttainmentBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/attainment.js"></script>
+    <script>
+        document.getElementById('sidebarCourseName').textContent = localStorage.getItem('selectedCourseName') || 'Course';
+        async function checkAuth() {
+            const result = await api.get('/auth/check');
+            if (!result.authenticated) window.location.href = 'login.html';
+            else document.getElementById('teacherName').textContent = result.name || result.teacher_id;
+        }
+        checkAuth();
+        async function logout() {
+            await api.post('/auth/logout', {});
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

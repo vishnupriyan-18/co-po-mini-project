@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Internal Assessment Marks</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 Internal Marks</h2>
+                <p id="sidebarCourseName" style="font-size:.75rem;opacity:.85;word-break:break-word;">Loading...</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="courses.html" class="nav-item"><span>🏠</span><span>My Courses</span></a>
+                <a href="dashboard.html" class="nav-item"><span>📊</span><span>Dashboard</span></a>
+                <a href="setup.html" class="nav-item active"><span>⚙️</span><span>Setup</span></a>
+                <a href="students.html" class="nav-item"><span>👨‍🎓</span><span>Students</span></a>
+                <a href="marks.html" class="nav-item"><span>📝</span><span>Marks Entry</span></a>
+                <a href="attainment.html" class="nav-item"><span>🎯</span><span>Attainment</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="teacherName">Faculty</span>
+                    <small>Logged In</small>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="width: 100%;">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Setup Configuration</h1>
+                <p id="courseSubtitle">Configure CO Pool, Internals, and Structure</p>
+            </div>
+
+            <!-- Step 1: CO Pool -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 1: Course Outcomes (CO) Pool</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Number of COs for this Course</label>
+                            <input type="number" class="form-control" id="totalCO"
+                                   min="1" max="10" value="3" style="width:120px;"
+                                   oninput="generateCOPoolDisplay()">
+                        </div>
+                    </div>
+                    <div id="coMaxMarksContainer" class="mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Step 2: Number of Internals -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 2: Number of Internal Assessments</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">How many internals?</label>
+                            <input type="number" class="form-control" id="internalCount"
+                                   min="1" max="5" value="2" style="width:120px;"
+                                   oninput="generateInternalForms()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Internal Configuration -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 3: Configure Each Internal</h3>
+                </div>
+                <div class="card-body">
+                    <div id="internalsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Step 4: DA Level Thresholds -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 4: DA Level Percentages (%)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group" style="padding-right: 20px;">
+                            <label class="form-label" style="color: #22543d; font-weight: bold;">Level 3 Threshold (>=)</label>
+                            <input type="number" class="form-control" id="lvl3Threshold" value="85" step="0.1" max="100" min="0">
+                        </div>
+                        <div class="form-group" style="padding-right: 20px;">
+                            <label class="form-label" style="color: #744210; font-weight: bold;">Level 2 Threshold (>=)</label>
+                            <input type="number" class="form-control" id="lvl2Threshold" value="75" step="0.1" max="100" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="color: #822727; font-weight: bold;">Level 1 Threshold (>=)</label>
+                            <input type="number" class="form-control" id="lvl1Threshold" value="60" step="0.1" max="100" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: CO-PO Matrix Mapping -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 5: CO-PO Matrix Mapping</h3>
+                </div>
+                <div class="card-body">
+                    <div style="overflow-x: auto;">
+                        <table class="table matrix-table" id="mappingTable" style="text-align: center;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">CO</th>
+                                    <th>PO1</th><th>PO2</th><th>PO3</th><th>PO4</th><th>PO5</th><th>PO6</th>
+                                    <th>PO7</th><th>PO8</th><th>PO9</th><th>PO10</th><th>PO11</th><th>PO12</th>
+                                    <th>PSO1</th><th>PSO2</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mappingBody">
+                            </tbody>
+                        </table>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-top: 5px;">* Enter 1, 2, 3 or leave blank / dash (-) for no correlation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: ESE Grade Equivalency Mapping -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Step 7: ESE Grade Equivalency Mapping</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 10px;">Define the marks (float) equivalent for each grade. These will appear as options in the ESE Marks Entry.</p>
+                    <div id="gradeMappingContainer">
+                        <table class="table" style="max-width: 400px;">
+                            <thead>
+                                <tr>
+                                    <th>Grade (e.g. O, A+)</th>
+                                    <th>Marks Equivalent (Float)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradeMappingBody">
+                            </tbody>
+                        </table>
+                        <button class="btn btn-outline btn-sm mt-2" onclick="addGradeRow()">➕ Add Grade</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-success btn-lg" onclick="saveAllSetup()">
+                        💾 Save Complete Setup
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/setup.js"></script>
+    <script>
+        const courseId = localStorage.getItem('selectedCourseId');
+        const courseName = localStorage.getItem('selectedCourseName');
+        if (!courseId) { window.location.href = 'courses.html'; }
+
+        document.getElementById('sidebarCourseName').textContent = courseName || 'Course';
+
+        async function checkAuth() {
+            const result = await api.get('/auth/check');
+            if (!result.authenticated) { window.location.href = 'login.html'; }
+            else { document.getElementById('teacherName').textContent = result.name || result.teacher_id; }
+        }
+        checkAuth();
+
+        async function logout() {
+            await api.post('/auth/logout', {});
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadExistingSetup();
+        });
+    </script>
+</body>
+</html>
