@@ -19,7 +19,10 @@
             <a href="setup.html" class="nav-item"><span>⚙️</span><span>Setup</span></a>
             <a href="students.html" class="nav-item"><span>👨‍🎓</span><span>Students</span></a>
             <a href="marks.html" class="nav-item"><span>📝</span><span>Marks Entry</span></a>
+<<<<<<< HEAD
                 <a href="attainment.html" class="nav-item"><span>🎯</span><span>Attainment</span></a>
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
         </nav>
         <div class="sidebar-footer">
             <div class="user-info">
@@ -84,6 +87,7 @@
             <div class="card-body" id="fillBody"></div>
         </div>
 
+<<<<<<< HEAD
         <!-- CO PO Overview -->
         <div class="card" id="attainmentCard" style="display:none;">
             <div class="card-header"><h3 class="card-title">🎯 Current CO-PO Attainment</h3></div>
@@ -103,6 +107,8 @@
             </div>
         </div>
 
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
         <!-- Quick Actions -->
         <div class="card">
             <div class="card-header"><h3 class="card-title">Quick Actions</h3></div>
@@ -111,7 +117,10 @@
                     <a href="setup.html" class="btn btn-primary">⚙️ Setup CO &amp; Internals</a>
                     <a href="students.html" class="btn btn-success">👨‍🎓 Manage Students</a>
                     <a href="marks.html" class="btn btn-primary">📝 Enter Marks</a>
+<<<<<<< HEAD
                     <a href="attainment.html" class="btn btn-primary">🎯 Calculate Attainment</a>
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
                     <a href="courses.html" class="btn btn-secondary">🏠 Switch Course</a>
                 </div>
             </div>
@@ -144,12 +153,20 @@ async function logout() {
 }
 
 async function loadDashboard() {
+<<<<<<< HEAD
     const [courseRes, coRes, internalsRes, studentsRes, attainmentRes] = await Promise.all([
         api.get(`/courses/${courseId}`),
         api.get(`/co/${courseId}`),
         api.get(`/internals/${courseId}`),
         api.get(`/students/${courseId}`),
         api.get(`/attainment/${courseId}/calculate`)
+=======
+    const [courseRes, coRes, internalsRes, studentsRes] = await Promise.all([
+        api.get(`/courses/${courseId}`),
+        api.get(`/co/${courseId}`),
+        api.get(`/internals/${courseId}`),
+        api.get(`/students/${courseId}`)
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
     ]);
 
     if (courseRes.success && courseRes.data) {
@@ -166,6 +183,7 @@ async function loadDashboard() {
         if (internalsRes.data.length > 0) loadFillStats(internalsRes.data);
     }
     if (studentsRes.success) document.getElementById('totalStudents').textContent = studentsRes.data.length;
+<<<<<<< HEAD
     
     // Load Attainment
     if (attainmentRes.success && attainmentRes.data && attainmentRes.data.po_attainment) {
@@ -186,6 +204,8 @@ async function loadDashboard() {
             document.getElementById('dashPoBody').innerHTML = `<tr>${bodyHtml}</tr>`;
         }
     }
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 }
 
 async function loadFillStats(internals) {

@@ -11,7 +11,10 @@ HOW TO RUN:
   2. Open PowerShell or Command Prompt in that folder
   3. Run:
        cd backend
+<<<<<<< HEAD
        pip install -r ..\requirements.txt
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
        py app.py
   4. Open your browser and go to:
        http://localhost:5000

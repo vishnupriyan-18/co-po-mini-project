@@ -11,6 +11,7 @@ marks_bp = Blueprint('marks', __name__, url_prefix='/api/marks')
 def check_auth():
     return 'user_id' in session
 
+<<<<<<< HEAD
 from database import execute_query, get_db_connection
 
 @marks_bp.route('/<int:course_id>/ese', methods=['GET'])
@@ -48,6 +49,8 @@ def save_ese_marks(course_id):
         conn.close()
     return jsonify({'success': True, 'message': 'ESE marks saved'})
 
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 
 @marks_bp.route('/<int:internal_id>', methods=['GET'])
 def get_marks(internal_id):

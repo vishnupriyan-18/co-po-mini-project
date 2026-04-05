@@ -25,6 +25,10 @@ async function loadMarksTable() {
         document.getElementById('marksCard').classList.add('hidden');
         document.getElementById('emptyState').classList.remove('hidden');
         document.getElementById('infoStrip').classList.add('hidden');
+<<<<<<< HEAD
+=======
+        document.getElementById('saveBtn').disabled = true;
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
         document.getElementById('clearBtn').style.display = 'none';
         return;
     }
@@ -72,7 +76,10 @@ async function loadMarksTable() {
 
     setupKeyboardNav();
     loadAnalytics(internalId);
+<<<<<<< HEAD
     loadAttainmentAnalytics();
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 }
 
 // Build table header (two rows: group + individual with max marks)
@@ -238,7 +245,10 @@ function clearAll() {
 // Save all marks
 async function saveAllMarks() {
     if (!currentInternalId) { showNotification('Please select an internal first', 'error'); return; }
+<<<<<<< HEAD
     
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
     const marksToSave = [];
     document.querySelectorAll('#marksTableBody tr').forEach(row => {
         const studentId = row.dataset.studentId;
@@ -265,7 +275,10 @@ async function saveAllMarks() {
     if (result.success) {
         showNotification(`✅ ${result.message}`, 'success');
         loadAnalytics(currentInternalId);
+<<<<<<< HEAD
         loadAttainmentAnalytics();
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
     } else {
         showNotification(result.message || 'Failed to save marks', 'error');
     }
@@ -277,6 +290,7 @@ function exportCSV() {
     window.open(`/api/marks/${currentInternalId}/export`, '_blank');
 }
 
+<<<<<<< HEAD
 // ==== ESE Logic ====
 let gradeMappings = [];
 
@@ -375,6 +389,8 @@ async function saveEseMarks() {
     }
 }
 
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 // Load and display analytics panel
 async function loadAnalytics(internalId) {
     const result = await api.get(`/marks/${internalId}/analytics`);
@@ -408,6 +424,7 @@ async function loadAnalytics(internalId) {
     panel.classList.remove('hidden');
 }
 
+<<<<<<< HEAD
 // Load and display attainment analytics
 async function loadAttainmentAnalytics() {
     const cid = localStorage.getItem('selectedCourseId');
@@ -457,6 +474,8 @@ async function loadAttainmentAnalytics() {
     }
 }
 
+=======
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 // Keyboard navigation
 function setupKeyboardNav() {
     const inputs = [...document.querySelectorAll('#marksTableBody .marks-input')];
@@ -494,7 +513,11 @@ function setupKeyboardNav() {
     });
 }
 
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => { 
     loadInternalsDropdown(); 
     loadEseMarksTable();
 });
+=======
+document.addEventListener('DOMContentLoaded', () => { loadInternalsDropdown(); });
+>>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
