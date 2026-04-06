@@ -6,19 +6,14 @@ REQUIREMENTS:
 
   Note: flask-cors is NOT required anymore.
 
-HOW TO RUN:
-  1. Extract the zip to a folder, e.g. C:\co-po-updated-v2\
-  2. Open PowerShell or Command Prompt in that folder
-  3. Run:
-       cd backend
-<<<<<<< HEAD
-       pip install -r ..\requirements.txt
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
-       py app.py
+HOW TO RUN (ONE COMMAND):
+  1. Open the project folder in File Explorer.
+  2. Double-click the 'run.bat' file. 
+  3. Wait for the terminal to say 'Starting backend server'.
   4. Open your browser and go to:
        http://localhost:5000
 
+  Note: Keep the 'run.bat' terminal window OPEN while using the app.
   DO NOT open the HTML files directly — always use the URL above.
 
 DEFAULT LOGIN:

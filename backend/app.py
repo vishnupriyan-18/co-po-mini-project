@@ -12,11 +12,8 @@ from routes.co_routes import co_bp
 from routes.student_routes import student_bp
 from routes.internal_routes import internal_bp
 from routes.marks_routes import marks_bp
-<<<<<<< HEAD
 from routes.attainment_routes import attainment_bp
 from routes.export_routes import export_bp
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 
 # Frontend folder is one level up from backend/
 FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend')
@@ -33,11 +30,8 @@ app.register_blueprint(co_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(internal_bp)
 app.register_blueprint(marks_bp)
-<<<<<<< HEAD
 app.register_blueprint(attainment_bp)
 app.register_blueprint(export_bp)
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 
 
 # Serve frontend HTML pages

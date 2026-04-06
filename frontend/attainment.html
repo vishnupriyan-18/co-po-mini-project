@@ -8,8 +8,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         body { font-family: 'Outfit', sans-serif; }
+        .chart-pane {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+            position: relative;
+            max-width: 900px;
+            margin-top: 10px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +90,8 @@
                 </div>
             </div>
 
+
+
             <div class="section-pane" style="padding: 0; background: transparent; box-shadow: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 15px;">
                     <div class="pane-title" style="border:none; margin:0; padding:0;">CO Attainment Result</div>
@@ -89,6 +114,17 @@
                             <div class="summary-stat-label">COURSE ATTAINMENT AVERAGE</div>
                             <div class="summary-stat-value" id="footerAvg">0.00</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- CO Attainment Chart (Moved & Smaller) -->
+                <div class="chart-pane">
+                    <div class="chart-header">
+                        <div class="chart-title">Visual Analysis</div>
+                        <div style="font-size: 0.75rem; color: #718096;">L3: ≥2.5 | L2: ≥1.5 | L1: <1.5</div>
+                    </div>
+                    <div style="height: 220px; width: 100%;">
+                        <canvas id="coAttainmentChart"></canvas>
                     </div>
                 </div>
 

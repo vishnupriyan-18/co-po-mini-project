@@ -89,7 +89,6 @@ CREATE INDEX IF NOT EXISTS idx_marks_student_internal ON marks(student_id, inter
 
 -- Default teacher account
 INSERT OR IGNORE INTO users (teacher_id, name, password) VALUES ('TCH001', 'Faculty', 'faculty123');
-<<<<<<< HEAD
 
 CREATE TABLE IF NOT EXISTS co_po_mapping (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,5 +128,3 @@ CREATE TABLE IF NOT EXISTS grade_mapping (
     marks_equivalent REAL,
     PRIMARY KEY(course_id, grade)
 );
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05

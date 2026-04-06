@@ -229,7 +229,6 @@ async function saveAllSetup() {
         }
     }
 
-<<<<<<< HEAD
     // Step 4: Save DA Level Thresholds
     const l3 = parseFloat(document.getElementById('lvl3Threshold').value) || 85.0;
     const l2 = parseFloat(document.getElementById('lvl2Threshold').value) || 75.0;
@@ -263,8 +262,6 @@ async function saveAllSetup() {
     });
     await api.post(`/attainment/${courseId}/grade-mapping`, { mappings: gradeMappings });
 
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
     hideLoading();
     showNotification('Setup saved successfully!', 'success');
 }
@@ -284,7 +281,6 @@ async function loadExistingSetup() {
     // Generate CO pool display
     generateCOPoolDisplay();
 
-<<<<<<< HEAD
     const totalCO = parseInt(document.getElementById('totalCO').value) || 0;
     let mHTML = '';
     const pList = ['PO1', 'PO2', 'PO3', 'PO4', 'PO5', 'PO6', 'PO7', 'PO8', 'PO9', 'PO10', 'PO11', 'PO12', 'PSO1', 'PSO2'];
@@ -298,8 +294,6 @@ async function loadExistingSetup() {
     const mb = document.getElementById('mappingBody');
     if (mb) mb.innerHTML = mHTML;
 
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
     // Load internals
     const internalsResult = await api.get(`/internals/${courseId}`);
     if (internalsResult.success && internalsResult.data.length > 0) {
@@ -348,8 +342,6 @@ async function loadExistingSetup() {
             }
         });
     }
-<<<<<<< HEAD
-
     // Load DA configuration
     const daConfigRes = await api.get(`/attainment/${courseId}/da-config`);
     if (daConfigRes.success && daConfigRes.data) {
@@ -399,6 +391,4 @@ function addGradeRow(grade = '', marks = '') {
         <td><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">remove</button></td>
     `;
     tbody.appendChild(tr);
-=======
->>>>>>> 71b952933dd2e916d4ac15410368dac0fb591c05
 }

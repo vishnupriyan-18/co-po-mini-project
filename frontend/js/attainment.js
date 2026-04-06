@@ -2,6 +2,7 @@ const courseId = localStorage.getItem('selectedCourseId');
 if (!courseId) { window.location.href = 'courses.html'; }
 
 const PO_LIST = ['PO1','PO2','PO3','PO4','PO5','PO6','PO7','PO8','PO9','PO10','PO11','PO12','PSO1','PSO2'];
+let coChartInstance = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     calculateAttainment();
@@ -113,7 +114,107 @@ async function calculateAttainment() {
     });
     poBody.innerHTML = `<tr class="summary-row">${vals}</tr>`;
 
+    // 6. Update Chart
+    updateAttainmentChart(data.co_attainment);
+
     showNotification('Results Generated!', 'success');
+}
+
+function updateAttainmentChart(coData) {
+    // Safety Check 1: Ensure Chart.js is actually loaded from CDN
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js library is not loaded. Graph will be skipped.');
+        return;
+    }
+
+    // Safety Check 2: Ensure the canvas element exists in the DOM
+    const canvas = document.getElementById('coAttainmentChart');
+    if (!canvas) {
+        console.error('Canvas element "coAttainmentChart" not found.');
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    
+    const labels = coData.map(co => `CO${co.co_number}`);
+    const values = coData.map(co => co.overall || 0);
+    const colors = values.map(v => {
+        if (v >= 2.5) return 'rgba(39, 174, 96, 0.7)'; // success
+        if (v >= 1.5) return 'rgba(243, 156, 18, 0.7)'; // warning
+        return 'rgba(231, 76, 60, 0.7)'; // danger
+    });
+    const borderColors = values.map(v => {
+        if (v >= 2.5) return 'rgba(39, 174, 96, 1)';
+        if (v >= 1.5) return 'rgba(243, 156, 18, 1)';
+        return 'rgba(231, 76, 60, 1)';
+    });
+
+    if (coChartInstance) {
+        coChartInstance.destroy();
+    }
+
+    try {
+        coChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Overall Attainment Value',
+                data: values,
+                backgroundColor: colors,
+                borderColor: borderColors,
+                borderWidth: 1,
+                borderRadius: 5,
+                barThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 3,
+                    ticks: {
+                        stepSize: 0.5,
+                        font: { family: 'Outfit', size: 11 }
+                    },
+                    grid: { color: '#f0f0f0' },
+                    title: {
+                        display: true,
+                        text: 'Attainment Level (0-3)',
+                        font: { family: 'Outfit', weight: 'bold' }
+                    }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: 'Outfit', size: 12, weight: 'bold' } }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(44, 62, 80, 0.9)',
+                    titleFont: { family: 'Outfit', size: 14 },
+                    bodyFont: { family: 'Outfit', size: 13 },
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `Attainment: ${context.raw.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+    } catch (e) {
+        console.error('Error rendering chart:', e);
+    }
 }
 
 function exportToExcel() {
